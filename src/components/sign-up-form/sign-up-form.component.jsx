@@ -1,6 +1,8 @@
 import { useState } from 'react';
 
-const defaultFormFileds = {
+import { createAuthUserWithEmailAndPassword, createUserDocumentFromAuth } from '../../utils/firebase/firebase.utils';
+
+const defaultFormFields = {
     displayName: '',
     email: '',
     password: '',
@@ -8,23 +10,53 @@ const defaultFormFileds = {
 }
 
 const SignUpForm = () => {
-    const [formFileds, setFormFields] = useState(defaultFormFileds);
-    const { displayName, email, password, confirmPassword } = formFileds;
+    const [formFields, setFormFields] = useState(defaultFormFields);
+    const { displayName, email, password, confirmPassword } = formFields;
 
-    console.log(formFileds);
+    console.log(formFields);
+    
+    const resetFormFields = () => {
+        setFormFields(defaultFormFields)
+    }
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+
+        if (password != confirmPassword) {
+            alert("passwords do not match");
+            return;
+        }
+
+        try {
+            const { user } = await createAuthUserWithEmailAndPassword(email, password);
+            
+            await createUserDocumentFromAuth(user, { displayName });
+            resetFormFields();
+        }
+        
+        catch(error) {
+            if (error.code = 'auth/email-already-in-use') {
+                alert('Cannot create user, email already in use');
+            } else {
+                console.log('user creation encountered and arror', error)
+            }
+        }
+
+    }
+  
 
     const handleChange = (event) => {
         const {name, value} = event.target;
 
-        setFormFields({...formFileds, [name]: value })
+        setFormFields({...formFields, [name]: value }) // here I update a key value pair in formfieds, the spread operator
+         //allows me to do that, the key is [name](whatever name I am changing)
+        // and value is whatever is the new value for that key.
     }
 
     return (
         <div>
             <h1> Sign up with your email and password</h1>
-            <form onSubmit={() => {
-
-            }}>
+            <form onSubmit={handleSubmit}>
                 <label htmlFor="">Display Name</label>
                 <input type="text" required onChange={handleChange} name="displayName" value={displayName}/>
                 
