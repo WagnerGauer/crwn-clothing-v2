@@ -3,14 +3,15 @@ import { initializeApp } from "firebase/app";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
-import { 
-    getAuth, 
-    signInWithRedirect, 
-    signInWithPopup, 
+import {
+    getAuth,
+    signInWithRedirect,
+    signInWithPopup,
     GoogleAuthProvider,
-    createUserWithEmailAndPassword
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword
 } from 'firebase/auth';
-import { 
+import {
     getFirestore,
     doc, // retrieve documents inside firestore database
     getDoc, // get the document data
@@ -37,7 +38,7 @@ provider.setCustomParameters({
 console.log(provider);
 
 export const auth = getAuth();
-export const signInWithGooglePopup = () => signInWithPopup(auth, provider); 
+export const signInWithGooglePopup = () => signInWithPopup(auth, provider);
 
 export const db = getFirestore();
 
@@ -45,7 +46,7 @@ export const createUserDocumentFromAuth = async (userAuth, additionalInformation
 
     if (!userAuth) return;
 
-    const userDocRef = doc(db, 'users', userAuth.uid );
+    const userDocRef = doc(db, 'users', userAuth.uid);
 
     console.log(userDocRef);
 
@@ -53,7 +54,7 @@ export const createUserDocumentFromAuth = async (userAuth, additionalInformation
     console.log(userSpapshot);
     console.log(userSpapshot.exists());
 
-    if(!userSpapshot.exists()) {
+    if (!userSpapshot.exists()) {
         const { displayName, email } = userAuth;
         const createdAt = new Date();
 
@@ -63,10 +64,16 @@ export const createUserDocumentFromAuth = async (userAuth, additionalInformation
                 email,
                 createdAt,
                 ...additionalInformation // Here 
-            }) 
+            })
         }
         catch (error) {
-            console.log('error creating the user', error.message)
+            console.log(error.code)
+            if (error.code == 'auth/wrong-password') {
+                console.log('wrong')
+                alert('incorrect password for email');
+
+            }
+            // console.log('error creating the user', error.message)
         }
     }
 
@@ -78,4 +85,10 @@ export const createAuthUserWithEmailAndPassword = async (email, password) => {
     if (!email || !password) return;
 
     return await createUserWithEmailAndPassword(auth, email, password);
+}
+
+export const signInUserWithEmailAndPassword = async (email, password) => {
+    if (!email || !password) return;
+
+    return await signInWithEmailAndPassword(auth, email, password);
 }
