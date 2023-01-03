@@ -1,4 +1,5 @@
 // Import the functions you need from the SDKs you need
+import { classBody } from "@babel/types";
 import { initializeApp } from "firebase/app";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -11,6 +12,7 @@ import {
    createUserWithEmailAndPassword,
    signInWithEmailAndPassword,
    signOut,
+   onAuthStateChanged,
 } from "firebase/auth";
 import {
    getFirestore,
@@ -90,3 +92,6 @@ export const signInUserWithEmailAndPassword = async (email, password) => {
 };
 
 export const signOutUser = async () => await signOut(auth);
+
+export const onAuthStateChangedListener = (callback) =>
+   onAuthStateChanged(auth, callback);
