@@ -1,12 +1,10 @@
 // Import the functions you need from the SDKs you need
-import { classBody } from "@babel/types";
 import { initializeApp } from "firebase/app";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 import {
    getAuth,
-   signInWithRedirect,
    signInWithPopup,
    GoogleAuthProvider,
    createUserWithEmailAndPassword,
@@ -18,9 +16,8 @@ import {
    getFirestore,
    doc, // retrieve documents inside firestore database
    getDoc, // get the document data
-   setDoc, // set te document data
+   setDoc, // set the document data
 } from "firebase/firestore";
-import { async } from "q";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -39,42 +36,53 @@ const provider = new GoogleAuthProvider();
 provider.setCustomParameters({
    prompt: "select_account",
 });
+// The purpose of the provider is to sign in the user.
 
 export const auth = getAuth();
+// I need the auth object to create a user, sign in and out a user, and probably more
+console.log(auth);
 export const signInWithGooglePopup = () => signInWithPopup(auth, provider);
+// The function onAuthStateChangedListener listens if the user has signed in
+// it does not matter which method he uses
 
 export const db = getFirestore();
 
 export const createUserDocumentFromAuth = async (
    userAuth,
+   // userAuth is the currentUser property from the auth object
    additionalInformation = {}
 ) => {
    if (!userAuth) return;
 
    const userDocRef = doc(db, "users", userAuth.uid);
 
-   const userSpapshot = await getDoc(userDocRef);
+   const userSnapshot = await getDoc(userDocRef);
+   // if there is a document for that user, the userSnapshot should countain
+   // the contents of that document, I can use the .exists() method to
+   // check whether or not a ducument for that user exists
 
-   if (!userSpapshot.exists()) {
+   if (!userSnapshot.exists()) {
       const { displayName, email } = userAuth;
       const createdAt = new Date();
-
+      // if there is no user document for that user I create one here
       try {
          await setDoc(userDocRef, {
             displayName,
             email,
             createdAt,
-            ...additionalInformation, // Here
+            ...additionalInformation,
          });
       } catch (error) {
          console.log(error.code);
-         if (error.code == "auth/wrong-password") {
+         if (error.code === "auth/wrong-password") {
             console.log("wrong");
-            alert("incorrect password for email");
+            alert("incorrect password or email");
          }
          // console.log('error creating the user', error.message)
       }
    }
+
+   console.log(userDocRef);
 
    return userDocRef;
 };
@@ -95,3 +103,12 @@ export const signOutUser = async () => await signOut(auth);
 
 export const onAuthStateChangedListener = (callback) =>
    onAuthStateChanged(auth, callback);
+// Once I run OnAuthStateChangedListener that listener will
+// always be there
+console.log(auth);
+
+// whenever the user logs in or out, the auth state changes, this causes the
+// callback to be executed.
+// A currentUser OBJECT(which is a property of auth) IS PASSED TO THE CALLBACK HERE,
+// if the user is not authenticated what is passed down to the callback is NULL
+// This is ALWAYS listening for a change in auth

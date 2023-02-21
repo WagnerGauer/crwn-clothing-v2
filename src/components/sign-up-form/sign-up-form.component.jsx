@@ -19,6 +19,7 @@ const defaultFormFields = {
 const SignUpForm = () => {
    const [formFields, setFormFields] = useState(defaultFormFields);
    const { displayName, email, password, confirmPassword } = formFields;
+   // user is the name of the user
 
    const resetFormFields = () => {
       setFormFields(defaultFormFields);
@@ -27,7 +28,7 @@ const SignUpForm = () => {
    const handleSubmit = async (event) => {
       event.preventDefault();
 
-      if (password != confirmPassword) {
+      if (password !== confirmPassword) {
          alert("passwords do not match");
          return;
       }
@@ -37,12 +38,16 @@ const SignUpForm = () => {
             email,
             password
          );
+         console.log(user);
+         console.log(displayName);
 
          await createUserDocumentFromAuth(user, { displayName });
+         // The above function creates a new document in Firestore. The function stores properties of the user object
+         // in the Firestore
          resetFormFields();
       } catch (error) {
          if ((error.code = "auth/email-already-in-use")) {
-            alert("Cannot create user, email already in use");
+            alert(`Cannot create user, ${error.code}`);
          } else {
             console.log("user creation encountered and arror", error);
          }
@@ -52,9 +57,17 @@ const SignUpForm = () => {
    const handleChange = (event) => {
       const { name, value } = event.target;
 
+      console.log(name);
+      console.log(value);
+
+      // This code updates the formFields state whenever some change happens in the fields of the form(in this case the input
+      // elements)
+
       setFormFields({ ...formFields, [name]: value }); // here I update a key value pair in formfieds, the spread operator
-      //allows me to do that, the key is [name](whatever name I am changing)
-      // and value is whatever is the new value for that key.
+      //spreads all the contents of formFields into a new object, the variable name is surrounded by square brackets because
+      // that way whatever value that name variable is equal to, is what is going to be assigned as the key for that specific
+      // value. COMPUTED PROPERTY NAME is what is called when a property name is dinamic, and it would not work without those
+      // !!!square brackets. THE SQUARE BRACKETS syntax is only used for the key and never the value of a property!!!
    };
 
    return (

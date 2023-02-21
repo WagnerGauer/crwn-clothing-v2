@@ -33,6 +33,8 @@ const Navigation = () => {
             </div>
          </div>
          <Outlet />
+         {/* this enables that whatever component that is rendered will always be 
+         rendered after the navigation */}
       </Fragment>
    );
 };
