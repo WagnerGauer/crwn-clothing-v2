@@ -1,21 +1,16 @@
-import "./form-input.styles.scss";
+import { FormInputLabel, Input, Group } from "./form-input.styles";
 
 const FormInput = ({ label, ...otherProps }) => {
    //because I have label before ...otherProps, the key value pair: label will not be inside of
    return (
-      <div className="group">
-         <input className="form-input" {...otherProps} />
+      <Group className="group">
+         <Input className="form-input" {...otherProps} />
          {label && (
-            <label
-               className={`${
-                  otherProps.value.length ? "shrink" : ""
-               } form-input-label`}
-               htmlFor=""
-            >
+            <FormInputLabel shrink={otherProps.value.length}>
                {label}
-            </label>
+            </FormInputLabel>
          )}
-      </div>
+      </Group>
    );
 };
 

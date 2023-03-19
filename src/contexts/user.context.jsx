@@ -13,7 +13,6 @@ export const UserContext = createContext({
 export const UserProvider = ({ children }) => {
    const [currentUser, setCurrentUser] = useState(null);
    const value = { currentUser, setCurrentUser };
-   console.log(currentUser);
 
    useEffect(() => {
       const unsubscribe = onAuthStateChangedListener((user) => {
@@ -23,7 +22,6 @@ export const UserProvider = ({ children }) => {
             // returns the user document. Otherwise it creates a
             // new user document and returns it
          }
-         console.log(user);
          setCurrentUser(user);
          // if the user is now logged in, the currentUser is set to the
          // entire user object with all of its properties,

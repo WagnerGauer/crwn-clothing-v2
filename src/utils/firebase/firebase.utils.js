@@ -44,7 +44,6 @@ provider.setCustomParameters({
 
 export const auth = getAuth();
 // I need the auth object to create a user, sign in and out a user, and probably more
-console.log(auth);
 export const signInWithGooglePopup = () => signInWithPopup(auth, provider);
 // The function onAuthStateChangedListener listens if the user has signed in
 // it does not matter which method he uses
@@ -64,7 +63,6 @@ export const addCollectionAndDocuments = async (
    });
 
    await batch.commit();
-   console.log("done");
 };
 
 export const getCategoriesAndDocuments = async () => {
@@ -115,8 +113,6 @@ export const createUserDocumentFromAuth = async (
       }
    }
 
-   console.log(userDocRef);
-
    return userDocRef;
 };
 
@@ -138,7 +134,6 @@ export const onAuthStateChangedListener = (callback) =>
    onAuthStateChanged(auth, callback);
 // Once I run OnAuthStateChangedListener that listener will
 // always be there
-console.log(auth);
 
 // whenever the user logs in or out, the auth state changes, this causes the
 // callback to be executed.

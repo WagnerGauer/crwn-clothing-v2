@@ -1,5 +1,5 @@
 import { Fragment, useContext } from "react"; // react forces me to use a top level element, if I don't want to have a div in my html, I have to use this
-import { Outlet, Link } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 
 import CartIcon from "../../components/cart-icon/cart-icon.component";
 import CartDropdown from "../../components/cart-dropdown/cart-dropdown.component";
@@ -11,7 +11,12 @@ import { ReactComponent as CrwnLogo } from "../../assets/crown.svg";
 
 import { signOutUser } from "../../utils/firebase/firebase.utils";
 
-import "./navigation.styles.scss";
+import {
+   NavigationContainer,
+   NavLinks,
+   NavLink,
+   LogoContainer,
+} from "./navigation.styles";
 
 const Navigation = () => {
    const { currentUser } = useContext(UserContext);
@@ -19,27 +24,23 @@ const Navigation = () => {
 
    return (
       <Fragment>
-         <div className="navigation">
-            <Link className="logo-container" to="/">
-               <CrwnLogo className="logo"></CrwnLogo>
-            </Link>
-            <div className="nav-links-container">
-               <Link className="nav-link" to="/shop">
-                  SHOP
-               </Link>
+         <NavigationContainer>
+            <LogoContainer to="/">
+               <CrwnLogo></CrwnLogo>
+            </LogoContainer>
+            <NavLinks>
+               <NavLink to="/shop">SHOP</NavLink>
                {currentUser ? (
-                  <span className="nav-link" onClick={signOutUser}>
+                  <NavLink as="span" onClick={signOutUser}>
                      SIGN OUT
-                  </span>
+                  </NavLink>
                ) : (
-                  <Link className="nav-link" to="/auth">
-                     Sign In
-                  </Link>
+                  <NavLink to="/auth">Sign In</NavLink>
                )}
                <CartIcon />
-            </div>
+            </NavLinks>
             {isCartOpen && <CartDropdown />}
-         </div>
+         </NavigationContainer>
          <Outlet />
          {/* this enables that whatever component that is rendered will always be 
          rendered after the navigation */}

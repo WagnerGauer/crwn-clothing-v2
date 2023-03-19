@@ -26,7 +26,6 @@ export const CategoriesProvider = ({ children }) => {
             "womens",
          ];
 
-         console.log(categoryMap);
          const filteredCategoryMap = Object.keys(categoryMap).reduce(
             (acc, key) => {
                if (CATEGORIES_KEYS.includes(key)) {
@@ -42,8 +41,6 @@ export const CategoriesProvider = ({ children }) => {
       };
       getCategoriesMap();
    }, []);
-
-   console.log(categoriesMap);
 
    // This was just to populate firestore database with dummy data comming from a file in this project
    // useEffect(() => {
